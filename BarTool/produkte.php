@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-        <h1 style="border-bottom-style: solid; text-align: center; font-size: 4em;">Produkte</h1>
+        <h1 style="border-bottom-style: solid; text-align: left; font-size: 4em;">Produkte</h1>
         
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -14,27 +14,35 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
         <link rel="stylesheet" type="text/css" href="overlay.css">
 
-      <!--  <script type="text/javascript">
+        <!-- load available products
+        <script type="text/javascript">
             jQuery(function($){
-                $('#add').load('http://localhost/Bartool #productButtons');
+                $('#available').load('http://localhost/Bartool #products');
             });
-        </script> -->
+        </script>
+        -->
     <head>
 
     <body>
 
     <form action="http://localhost/Bartool/index.php">
-            <button style="position: fixed; top: 0; right: 0; width: 30%; height: 6%; font-size: 2em;" class="btn btn-primary">Zurück</button>
+            <button style="position: fixed; top: 0; right: 0; width: 30%; font-size: 1.8em;" class="btn btn-primary">Zurück</button>
         </form>
        
+        
+        <form action="http://localhost/Bartool/Produkte.php" method="GET">
+            <div class="form-group">
+                <input type="text" placeholder="Produktname" name="Art" id="a" class="wantclick">
+                <input type="number" placeholder="Größe in Liter" step="0.01" name="Groesse" id="g">
+                <input type="number" placeholder="Preis in Euro" step="0.01"name="Preis" id="p">
+                <button style="float:right;" class="btn btn-secondary btn" type="submit" onclick="InsertProductIntoDB(a.value, g.value ,p.value)">Produkt Hinzufügen</button>
+            </div>
+        </form> 
+        
+        
 
-        <div>
-            <form action="http://localhost/Bartool/index.php" method="get" class="form-group">
-                <input style="width: 60%; float: left; font-size: 3em;" type="text" id="productName" placeholder="Produkt Name" name="productName">
-                <?php $productName = $_GET['productName'] ?>
-                
-                <button style="float: right; position: fixed; width: 35%; font-size: 3em;" type="submit" class="btn btn-secondary">Produkt hinzufügen</button>
-            </form>
+
+        <div id="available">
         </div>
     </body>
 </html>

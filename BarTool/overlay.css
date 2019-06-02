@@ -25,6 +25,8 @@ select#fixed {
     margin-top: 0.3em; 
     width: 6em; 
     font-size: 3em;
+    border: 1px solid black;
+    padding-bottom: 15px;
 }
 
 .btnCard{
