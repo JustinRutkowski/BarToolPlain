@@ -1,11 +1,7 @@
 .shopppingCart{
-    position: absolute;
-    float: right;
-    margin-left: 70%;
     height: 30%;
     bottom: 0;
     right: 0;
-   
     z-index: -1;
 }
 
@@ -20,9 +16,9 @@ select#fixed {
 
 .btn{
     float: left; 
-    margin-left: 0.3em; 
-    margin-right: 0.3em; 
-    margin-top: 0.3em; 
+    margin-left: 0.1em; 
+    margin-right: 0.1em; 
+    margin-top: 0.2em; 
     width: 6em; 
     font-size: 3em;
     border: 1px solid black;
@@ -30,9 +26,9 @@ select#fixed {
 }
 
 .btnCard{
-    width: 20em;
+    width: 100%;
     font-size: 2em;
-    background-color: darkred;
+    background-color: darkblue;
     color: white;
 }
 
@@ -88,7 +84,7 @@ select#fixed {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0,0,0, 0.7); /* Black background with opacity */
+    background-color: rgba(0,0,0, 0.85); /* Black background with opacity */
     z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
     cursor: pointer; /* Add a pointer on hover */
   }

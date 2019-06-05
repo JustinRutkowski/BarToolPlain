@@ -25,8 +25,8 @@
 
     <body>
 
-    <form action="http://localhost/Bartool/index.php">
-            <button style="position: fixed; top: 0; right: 0; width: 30%; font-size: 1.8em;" class="btn btn-primary">Zurück</button>
+    <form action="../Bartool/index.php">
+            <button style="position: absolute; top: 0; right: 0; width: 30%; font-size: 1.8em;" class="btn btn-primary">Zurück</button>
         </form>
        
         

@@ -36,6 +36,7 @@ function off() {
   document.getElementById("overlay").style.display = "none";
   document.getElementById("shoppingCartOverlay").style.display = "none";
   document.getElementById("productCollectionOverlay").style.display = "none";
+  document.getElementById("orderOverlay").style.display = "none";
   // remove ohne JQuery nicht hinbekommen
   $("h2").remove();
   $("#del").remove();
@@ -60,15 +61,6 @@ function cartItemOverlayOn(productName) {
 
 function productCollectionOverlay(){
   document.getElementById("productCollectionOverlay").style.display = "block"; 
-}
-
-function addProduct(name){
-  var newProduct = document.createElement("button");
-  newProduct.textContent = name;
-  newProduct.id = name;
-  
-  //newProduct.class = "btn btn-secondary btn-lg";
-  document.body.append(newProduct);
 }
 
 function addToShoppingCart(Size){
@@ -106,6 +98,7 @@ function addToShoppingCart(Size){
   if(document.getElementById("shopppingCartItem" == null)){
     container.style.display = "none";
   }
+  off();
 }
 
 /**
@@ -124,6 +117,34 @@ function setQuantity(Quantity){
   document.getElementById("quantity").innerText = Quantity;  
 }
 
+function calculateChange(){
+  var price = document.getElementById("price").innerHTML.replace('€','');
+  var moneyReceived = document.getElementById("moneyReceived").value;
+  var voucher = document.getElementById("voucher").value;
+  var voucherLeft = document.getElementById("voucherLeft").innerHTML.replace('€','');
+  var drinkMoney = document.getElementById("drinkMoney").value;
+  
+  if(voucher != 0 || voucher != ""){
+    document.getElementById("voucherLeft").innerHTML = (voucher - price).toFixed(2) + " €";
+    if(document.getElementById("voucherLeft").innerHTML.replace('€','') >= 0){
+      document.getElementById("change").innerHTML = "0.00€"
+      document.getElementById("Restbetrag").innerHTML = "Rest vom Gutschein:"
+    }
+    if(document.getElementById("voucherLeft").innerHTML.replace('€','') < 0){
+      document.getElementById("Restbetrag").innerHTML = "noch zu zahlen:"
+      document.getElementById("change").innerHTML = (moneyReceived - - voucherLeft).toFixed(2) + " €"; 
+    }
+  } 
+  else {
+    document.getElementById("voucherLeft").innerHTML = "";
+    document.getElementById("change").innerHTML = (moneyReceived - price).toFixed(2) + " €";
+  }
+
+  if(drinkMoney != 0 || drinkMoney != ""){
+    document.getElementById("change").innerHTML = (document.getElementById("change").innerHTML.replace('€','') - drinkMoney).toFixed(2) + " €";
+  }
+}
+
 //------------Funktionen zur Datenbank Kommunikation----------
 
 /**
@@ -131,9 +152,9 @@ function setQuantity(Quantity){
  */
 function LoadDBData(){
   productArray = Array();
+  
   $.ajax({
-      
-      url: "http://localhost/BarTool/Controller.php",
+      url: "../BarTool/Controller.php",
       type: 'POST',
       
       data: {cmd: '1'},
@@ -166,7 +187,6 @@ function LoadDBData(){
       }
       document.getElementById(e.id).parentElement.style = "border: solid black; padding-bottom: 15px;";
     })
-    
 }
 
 /**
@@ -176,13 +196,11 @@ function LoadDBData(){
  * @Preis {INSERT INTO DB} prize 
  */
 function InsertProductIntoDB(productName, amount, prize){
-
-
   if(amount != "" && productName != "" && prize != ""){
     console.log(productName + amount + prize);
     $.ajax({
         
-        url: "http://localhost/BarTool/Controller.php",
+        url: "../BarTool/Controller.php",
         type: 'POST',
         data: {
             cmd: '2',
@@ -201,10 +219,8 @@ function InsertProductIntoDB(productName, amount, prize){
         }
       });
       alert(productName + " hinzugefügt");
-    }
-    
+    }    
 }
-
 
 /**
  * Entfernt anhand des Namens alle Vorkommnisse aus der DB
@@ -212,8 +228,7 @@ function InsertProductIntoDB(productName, amount, prize){
  */
 function removeFromDB(productName){
   $.ajax({
-        
-    url: "http://localhost/BarTool/Controller.php",
+    url: "../BarTool/Controller.php",
     type: 'POST',
     data: {
         cmd: '3',
@@ -237,8 +252,7 @@ function removeFromDB(productName){
  */
 function appendSizesToProduct(productName){
   $.ajax({
-        
-    url: "http://localhost/BarTool/Controller.php",
+    url: "../BarTool/Controller.php",
     type: 'POST',
     data: {
         cmd: '4',
@@ -259,9 +273,8 @@ function appendSizesToProduct(productName){
           document.getElementById("productSizes").appendChild(sizes);
 
           // adde onClick für jeden erstellen Button
-          sizes.setAttribute("onclick","addToShoppingCart(value)");
+          sizes.setAttribute("onclick","addToShoppingCart(value + ' Liter')");
       }
-   
     },
     error: function (xhr, ajaxOptions, thrownError) {
       alert("error");
@@ -272,7 +285,92 @@ function appendSizesToProduct(productName){
 }
 
 /**
- * Warten um manchen Datentransfer abwarten zu können wennn benötigt
+ * 
+ */
+function placeOrder(){
+  var priceSum = 0;
+  var quantity = Array();
+  var priceArray = Array();
+  var shoppingContainer = document.getElementById("shoppingContainer");
+  for (i=2; i < shoppingContainer.childElementCount ; i++ ){
+    var buttonText = shoppingContainer.children.item(i).innerText;
+    var name = buttonText.split("|", 3)[0];
+    quantity.push(buttonText.split("|", 3)[1]);
+    var size = buttonText.split("|", 3)[2];
+    $.ajax({
+      url: "../BarTool/Controller.php",
+      type: 'POST',
+      data: {
+          cmd: '5',
+          Art: name,
+          Groesse: size,
+      },
+      success: function(response){ 
+        var price = JSON.parse(response);
+        priceArray.push(price.toString());
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        alert("error");
+        alert("Insert DB xhr.status" + xhr.status);
+        alert("Insert DB thrownError" + thrownError);
+      }
+    });
+  }
+
+  Sleep(100).then(() => {
+    for (i=0; i < shoppingContainer.childElementCount -2; i++ ){
+      var priceSumPerProduct = quantity[i] * priceArray[i];
+      priceSum = priceSumPerProduct + priceSum; 
+    }
+    document.getElementById("orderOverlay").style.display = "block";
+    document.getElementById("price").innerHTML = priceSum.toFixed(2) + " €";
+    $('#moneyReceived').focus();
+  })
+}
+
+function finishOrder(){
+  if(document.getElementById("price").innerHTML <= document.getElementById("moneyReceived").value 
+    || document.getElementById("change").innerHTML == "0.00 €"){
+      $('.btnCard').remove();
+      document.getElementById("shoppingContainer").style.display = "none";
+      off();
+
+
+      // gather all the things to send
+      var price = document.getElementById("price").innerHTML.replace('€','');
+      var moneyReceived = document.getElementById("moneyReceived").value;
+      var voucher = document.getElementById("voucher").value;
+      var drinkMoney = document.getElementById("drinkMoney").value;
+      var change = document.getElementById("change").innerHTML.replace('€','');
+      var user = "test";
+
+      /*$.ajax({
+        url: "../BarTool/Controller.php",
+        type: 'POST',
+        data: {
+            cmd: '6',
+            Bestellungspreis: price,
+            GutscheinWert: voucher,
+            GeldErhalten: moneyReceived,
+            TrinkGeld: drinkMoney,
+            RueckGeld = change,
+            Nutzer = user;
+        },
+        success: function(response){ 
+          var price = JSON.parse(response);
+          priceArray.push(price.toString());
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          alert("error");
+          alert("Insert DB xhr.status" + xhr.status);
+          alert("Insert DB thrownError" + thrownError);
+        }
+      });*/
+  }
+}
+
+/**
+ * um manchen Datentransfer abwarten zu können wennn benötigt
  * @milliseconds {Zeit zu warten in Millisekunden} milliseconds 
  */
 function Sleep(milliseconds) {

@@ -1,11 +1,10 @@
 <?php
-$cmd = $_POST['cmd']; 
+$cmd = $_POST['cmd'] * 1; 
 
 switch ($cmd){
     // GetDataBaseData
     case 1: 
         $products = array();
-
         $mysqli = new mysqli("localhost", "root", "root", "kabaret");
         if ($mysqli->connect_errno) {
             die("Verbindung fehlgeschlagen: " . $mysqli->connect_error);
@@ -56,7 +55,6 @@ switch ($cmd){
         $statement->bind_param("s", $Art);
         $statement->execute();
         $result = $statement->get_result();
-
     break;
 
     // append the defined product Sizes to overlay
@@ -80,6 +78,50 @@ switch ($cmd){
 
         echo json_encode($sizes);
 
+    break;
+
+    case 5:
+        $Art = $_POST['Art'];
+        $Groesse = $_POST['Groesse'];
+        $prices = array();
+        $mysqli = new mysqli("localhost", "root", "root", "kabaret");
+        if ($mysqli->connect_errno) {
+            die("Verbindung fehlgeschlagen: " . $mysqli->connect_error);
+        }
+        
+        $sql = "SELECT Preis FROM getraenke WHERE Art = ? AND Groesse = ?";
+        $statement = $mysqli->prepare($sql);
+        $statement->bind_param("sd", $Art, $Groesse);
+        $statement->execute();
+        $result = $statement->get_result();
+
+        while($row = $result->fetch_assoc()) {
+            array_push($prices, $row['Preis']);
+        }
+
+        echo json_encode($prices);
+    break;
+
+    case 6:
+        $Bestellungspreis = $_POST['Bestellungspreis'];
+        $GutscheinWert = $_POST['GutscheinWert'];
+        $GeldErhalten = $_POST['GeldErhalten'];
+        $TrinkGeld = $_POST['TrinkGeld'];
+        $RueckGeld = $_POST['RueckGeld'];
+        $Nutzer = $_POST['Nutzer'];
+
+        $mysqli = new mysqli("localhost", "root", "root", "kabaret");
+        if ($mysqli->connect_errno) {
+            die("Verbindung fehlgeschlagen: " . $mysqli->connect_error);
+        }
+        
+        //$sql = "SELECT Preis FROM getraenke WHERE Art = ? AND Groesse = ?";
+        $statement = $mysqli->prepare($sql);
+        $statement->bind_param("sd", $Art, $Groesse);
+        $statement->execute();
+        $result = $statement->get_result();
+
+        echo json_encode($result);
     break;
 }
 

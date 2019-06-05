@@ -2,8 +2,8 @@
 <html>
     <head>
         <h1 style="text-align: left; font-size: 4em;">Auswahl</h1>     
-        <form action="http://localhost/Bartool/Produkte.php">
-            <button id="productCollection" style="position: fixed; float: right; top: 0; right: 0; width: 40%; font-size: 2em;" class="btn btn-primary">Produkte</button>
+        <form action="../Bartool/Produkte.php">
+            <button id="productCollection" style="position: absolute; float: right; top: 0; right: 0; width: 40%; font-size: 2em;" class="btn btn-primary">Produkte</button>
         </form> 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -38,7 +38,6 @@
           
         <!-- Product Overlay -->
         <div id="overlay" class="overlay">
-            
             <!-- Button to close the overlay navigation -->
             <a href="javascript:void(0)" class="closebtn" onclick="off()">&times;</a>
             <!-- Overlay content -->
@@ -58,12 +57,10 @@
                         <option id="10" name="amount" value="10">10</option>
                     </select>
                 </div>
-
-            <div id="productSizes">
-                
+                <div id="productSizes">
+                </div>
             </div>
         </div>
-    </div>
 
 
         <!-- Shopping Cart Overlay -->
@@ -76,34 +73,68 @@
                     <button style="width: 70%; font-size: 2em;" id="delete" type="submit" class="btn btn-secondary btn">Entfernen</button>
                     <button style="width: 70%; font-size: 2em;" id="edit" type="submit" class="btn btn-secondary btn">Bearbeiten</button>
                 </div>
-            <div>
             </div>
         </div>
-    </div>
-    <!-- Shopping Cart -->
-    <div style="display: none" id="shoppingContainer" class="shopppingCart">
-    </div>
- 
+        <!-- Container for Shopping Cart Items -->
+        <div style="display: none" id="shoppingContainer" class="shopppingCart">
+            <button id="order" class="btn btn-success" style="text-align:center; width:100%; margin-left: 0; margin-bottom: 1em;" onclick="placeOrder()">Bestellen</button>
+            <h3 class="h3" style="text-align: center;">Produkt | Menge | Größe</h3>
+        </div>
+    
         <!-- Product Collection Overlay -->
-    <div id="productCollectionOverlay" class="overlay">
-        <!-- Button to close the overlay navigation -->
-        <a href="javascript:void(0)" class="closebtn" onclick="off()">&times;</a>
-        <!-- Overlay content -->
-        <div class="overlay-content">      
-        <div style="font-size: 2em; margin-top: 1em;" class="form-group">
-        <input type="text">
-        <input type="number" step="0.01">
-        <input type="number" step="0.01">
-        <input type="submit">
-        <button style="width: 70%; font-size: 2em;" id="add" type="submit" class="btn btn-secondary btn" onclick="InsertProductIntoDB()">hinzufügen</button>
-       
+        <div id="productCollectionOverlay" class="overlay">
+            <!-- Button to close the overlay navigation -->
+            <a href="javascript:void(0)" class="closebtn" onclick="off()">&times;</a>
+            <!-- Overlay content -->
+            <div class="overlay-content">      
+                <div style="font-size: 2em; margin-top: 1em;" class="form-group">
+                    <input type="text">
+                    <input type="number" step="0.01">
+                    <input type="number" step="0.01">
+                    <input type="submit">
+                    <button style="width: 70%; font-size: 2em;" id="add" type="submit" class="btn btn-secondary btn" onclick="InsertProductIntoDB()">hinzufügen</button>
+                </div>
+            </div>
         </div>
-
-        <div>
-            
-        </div>
-        </div>
-    </div>
         
+         <!-- Order Overlay -->
+         <div id="orderOverlay" class="overlay">
+            <!-- Button to close the overlay navigation -->
+            <a href="javascript:void(0)" class="closebtn" onclick="off()">&times;</a>
+            <!-- Overlay content -->
+            <div class="overlay-content">   
+            <h1 style="color: white;">Zahlungsabwicklung</h1>   
+                <div style="font-size: 2em; margin-top: 1em;">
+                   
+                    <div style="text-align: center;">
+                         <input style="margin-top: 1em; text-align: center;" type=number step=0.01 id="voucher" placeholder="Gutscheinbetrag" onkeyup="calculateChange()">
+                    </div>
+
+                    <div style="text-align: center; font-size: 1.2em; color: white; top: 8em; left: 0.5em;">
+                        <label id="Restbetrag">Restbetrag:</label>
+                        <label id="voucherLeft"></label>
+                    </div>
+
+                    <div style="float: left; font-size: 1.2em; color: white; top: 3em; left: 0.5em;">
+                        <label>Kosten:</label>
+                        <label id="price"></label>
+                    </div>
+
+                    <div style="text-align: right; font-size: 1.2em; color: white; top: 3em; right: 0;">
+                        <label>Rückgeld:</label>
+                        <label id="change">€</label>
+                    </div>
+
+                    <div style="text-align: right;">
+                        <input style="height: 1.3em; width: 6em; text-align: center;" type=number step=0.01 id="drinkMoney" placeholder="Trinkgeld" onkeyup="calculateChange()">
+                    </div> 
+
+                    <div style="text-align: center;">
+                        <input style="margin-top: 1em; text-align: center;" type=number step=0.01 id="moneyReceived" placeholder="Eingabe Geld erhalten" onkeyup="calculateChange()">
+                    </div>
+                    <button style="width: 100%; margin-left: 0; font-size: 2em; margin-top:1em;" id="edit" type="submit" class="btn btn-secondary btn" onclick="finishOrder()">Bestellung abschließen</button>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
