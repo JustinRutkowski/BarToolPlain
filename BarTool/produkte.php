@@ -31,17 +31,14 @@
        
         
         <form action="http://localhost/Bartool/Produkte.php" method="GET">
-            <div class="form-group">
-                <input type="text" placeholder="Produktname" name="Art" id="a" class="wantclick">
-                <input type="number" placeholder="Größe in Liter" step="0.01" name="Groesse" id="g">
-                <input type="number" placeholder="Preis in Euro" step="0.01"name="Preis" id="p">
-                <button style="float:right;" class="btn btn-secondary btn" type="submit" onclick="InsertProductIntoDB(a.value, g.value ,p.value)">Produkt Hinzufügen</button>
+            <div style=>
+                <input class="form-control form-control-lg" type="text" placeholder="Produktname" name="Art" id="a" class="wantclick">
+                <input class="form-control form-control-lg" type="number" placeholder="Größe in Liter" step="0.01" name="Groesse" id="g">
+                <input class="form-control form-control-lg" type="number" placeholder="Preis in Euro" step="0.01"name="Preis" id="p">
+                <button style="width: 100%" class="btn btn-secondary btn" type="submit" onclick="InsertProductIntoDB(a.value, g.value ,p.value)">Produkt Hinzufügen</button>
             </div>
         </form> 
         
-        
-
-
         <div id="available">
         </div>
     </body>

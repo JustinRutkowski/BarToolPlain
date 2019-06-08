@@ -35,8 +35,8 @@ function on(name) {
 function off() {
   document.getElementById("overlay").style.display = "none";
   document.getElementById("shoppingCartOverlay").style.display = "none";
-  document.getElementById("productCollectionOverlay").style.display = "none";
   document.getElementById("orderOverlay").style.display = "none";
+  document.getElementById("loginOverlay").style.display = "none";
   // remove ohne JQuery nicht hinbekommen
   $("h2").remove();
   $("#del").remove();
@@ -59,12 +59,9 @@ function cartItemOverlayOn(productName) {
   document.getElementById("heading").append(node);
 }
 
-function productCollectionOverlay(){
-  document.getElementById("productCollectionOverlay").style.display = "block"; 
-}
-
 function addToShoppingCart(Size){
-
+  document.getElementById("order").style.display = "block";
+  document.getElementById("info").style.display = "block";
   var container = document.getElementById("shoppingContainer");
   container.style.display = "block";
   var name = document.getElementById("productName").textContent;
@@ -84,11 +81,16 @@ function addToShoppingCart(Size){
   shopppingCartItem.appendChild(Size);
 
   shopppingCartItem.onclick = shoppingCartOverlay;
-  function shoppingCartOverlay(){
 
+  // Overlay bei anklicken der einzelnen Produkte
+  function shoppingCartOverlay(){
     document.getElementById("shoppingCartOverlay").style.display = "block"; 
     $("#delete").click(function(){
       shopppingCartItem.remove();
+      if (document.getElementById("shoppingContainer").childElementCount == 2){
+        document.getElementById("order").style.display = "none";
+        document.getElementById("info").style.display = "none";
+      }
       off();
     });
     $("#edit").click(function(){
@@ -151,8 +153,26 @@ function calculateChange(){
  * SELECT alle gefundenen Produkte und erstellt aus Ergbennis Buttons zur Auswahl (keine Duplikate)   
  */
 function LoadDBData(){
+
+  // Einblenden der Loginpage wenn es keinen Loginnamen gibt
+  document.getElementById("loginOverlay").style.display = "block";
+  if(document.getElementById("login") == null){
+    $('#loginButton').click(function(){
+      var loginname = document.createElement("p");
+      loginname.id = "login";
+      loginname.style.visibility = "hidden";
+      loginname.innerHTML = document.getElementById("loginName").value;
+      document.body.append(loginname);
+      if(document.getElementById("loginName").value != ""){
+        off();
+      }
+      if(document.getElementById("loginName").value == ""){
+        $('#login').remove();
+      }
+    });
+  }
+
   productArray = Array();
-  
   $.ajax({
       url: "../BarTool/Controller.php",
       type: 'POST',
@@ -167,26 +187,25 @@ function LoadDBData(){
         alert("Load DB thrownError" + thrownError);
       }
     });
+ 
+  // Sleep um synchronen ajax call zu vermeiden
+  Sleep(50).then(() => {
+    for(var i = 0; i < productArray.length; i++){
+      // jeder 3. Wert ist immer ein Name da immer (Name, Menge, Preis)
+      if(i % 3 == 0 && document.getElementById(productArray[i]) == null){
+        var e = document.createElement("button");
+        e.id = productArray[i];
+        e.className = "btn btn-secondary btn-lg";
+        e.textContent = productArray[i];
+        document.getElementById("heading").appendChild(e);
 
-   
-    // wait for the data to transfer
-    Sleep(100).then(() => {
-      for(var i = 0; i < productArray.length; i++){
-        // jeder 3. Wert ist immer ein Name da immer (Name, Menge, Preis)
-        if(i % 3 == 0 && document.getElementById(productArray[i]) == null){
-          var e = document.createElement("button");
-          e.id = productArray[i];
-          e.className = "btn btn-secondary btn-lg";
-          e.textContent = productArray[i];
-          document.getElementById("heading").appendChild(e);
-
-          // so wirds geamcht
-          document.getElementById(e.id).setAttribute("onclick","on(id)");
-          document.getElementById(e.id).style = "border: 1px solid black;";
-        }
+        // so wirds geamcht
+        document.getElementById(e.id).setAttribute("onclick","on(id)");
+        document.getElementById(e.id).style = "border: 1px solid black;";
       }
-      document.getElementById(e.id).parentElement.style = "border: solid black; padding-bottom: 15px;";
-    })
+    }
+    document.getElementById(e.id).parentElement.style = "border: solid black; padding-bottom: 15px;";
+  })
 }
 
 /**
@@ -209,7 +228,6 @@ function InsertProductIntoDB(productName, amount, prize){
             Preis: prize,
         },
         success: function(response){ 
-        alert(response);
 
         },
         error: function (xhr, ajaxOptions, thrownError) {
@@ -288,6 +306,16 @@ function appendSizesToProduct(productName){
  * 
  */
 function placeOrder(){
+
+  // reset the inputs and labels
+  document.getElementById("price").innerHTML = "";
+  document.getElementById("change").innerHTML = "";
+  document.getElementById("drinkMoney").value = "";
+  document.getElementById("moneyReceived").value = "";
+  document.getElementById("voucher").value = "";
+  document.getElementById("voucherLeft").innerHTML = "";
+
+
   var priceSum = 0;
   var quantity = Array();
   var priceArray = Array();
@@ -300,6 +328,7 @@ function placeOrder(){
     $.ajax({
       url: "../BarTool/Controller.php",
       type: 'POST',
+      async: false,
       data: {
           cmd: '5',
           Art: name,
@@ -317,57 +346,157 @@ function placeOrder(){
     });
   }
 
-  Sleep(100).then(() => {
-    for (i=0; i < shoppingContainer.childElementCount -2; i++ ){
-      var priceSumPerProduct = quantity[i] * priceArray[i];
-      priceSum = priceSumPerProduct + priceSum; 
-    }
-    document.getElementById("orderOverlay").style.display = "block";
-    document.getElementById("price").innerHTML = priceSum.toFixed(2) + " €";
-    $('#moneyReceived').focus();
-  })
+ 
+  for (i=0; i < shoppingContainer.childElementCount -2; i++ ){
+    var priceSumPerProduct = quantity[i] * priceArray[i];
+    priceSum = priceSumPerProduct + priceSum; 
+  }
+  document.getElementById("orderOverlay").style.display = "block";
+  document.getElementById("price").innerHTML = priceSum.toFixed(2) + " €";
+  $('#moneyReceived').focus();
+
 }
 
 function finishOrder(){
-  if(document.getElementById("price").innerHTML <= document.getElementById("moneyReceived").value 
-    || document.getElementById("change").innerHTML == "0.00 €"){
-      $('.btnCard').remove();
-      document.getElementById("shoppingContainer").style.display = "none";
-      off();
+  var price = parseInt(document.getElementById("price").innerHTML.replace('€',''));
+  var moneyReceived = parseInt(document.getElementById("moneyReceived").value);
+  var voucher = parseInt(document.getElementById("voucher").value);
+  var drinkMoney = parseInt(document.getElementById("drinkMoney").value);
+  var change = parseInt(document.getElementById("change").innerHTML.replace('€',''));
+
+  var condition = false;
+
+  // Control when the order can be finished
+  if((moneyReceived >= price || voucher + moneyReceived >= price || voucher >= price)){
+    
+    condition = true;
+
+    if(drinkMoney != null){
+      if(drinkMoney > change){
+        condition = false;
+      }
+    }
+  }
 
 
+  if(condition){
       // gather all the things to send
       var price = document.getElementById("price").innerHTML.replace('€','');
       var moneyReceived = document.getElementById("moneyReceived").value;
       var voucher = document.getElementById("voucher").value;
       var drinkMoney = document.getElementById("drinkMoney").value;
       var change = document.getElementById("change").innerHTML.replace('€','');
-      var user = "test";
+      var BestellungsID;
+      var user = document.getElementById("login").innerHTML;
 
-      /*$.ajax({
+      // for inserting to table Bestellungen and simultaniesly get the highest BestellungsID
+      
+      $.ajax({
         url: "../BarTool/Controller.php",
         type: 'POST',
+        async: false,
         data: {
             cmd: '6',
             Bestellungspreis: price,
             GutscheinWert: voucher,
             GeldErhalten: moneyReceived,
             TrinkGeld: drinkMoney,
-            RueckGeld = change,
-            Nutzer = user;
+            RueckGeld: change,
+            Nutzer: user,
         },
-        success: function(response){ 
-          var price = JSON.parse(response);
-          priceArray.push(price.toString());
+        success: function(response){
+          var res = JSON.parse(response);
+          BestellungsID = res["MAX(BestellungsID)"];
+          console.log("BestellungsID: " + BestellungsID);
         },
         error: function (xhr, ajaxOptions, thrownError) {
           alert("error");
           alert("Insert DB xhr.status" + xhr.status);
           alert("Insert DB thrownError" + thrownError);
         }
-      });*/
+      });
+
+      
+      var shoppingContainer = document.getElementById("shoppingContainer");
+      for (i=2; i < shoppingContainer.childElementCount ; i++ ){
+       
+        var buttonText = shoppingContainer.children.item(i).innerText;
+        var name = buttonText.split("|", 3)[0];
+        var quantity = buttonText.split("|", 3)[1];
+        var size = buttonText.split("|", 3)[2];
+        var price;
+        var productID;
+
+        $.ajax({
+          url: "../BarTool/Controller.php",
+          type: 'POST',
+          async: false,
+          data: {
+              cmd: '5',
+              Art: name,
+              Groesse: size,
+          },
+          
+          success: function(response){ 
+            price = JSON.parse(response);
+          },
+          error: function (xhr, ajaxOptions, thrownError) {
+            alert("error");
+            alert("Insert DB xhr.status" + xhr.status);
+            alert("Insert DB thrownError" + thrownError);
+          }
+        });
+
+        
+        $.ajax({
+          url: "../BarTool/Controller.php",
+          type: 'POST',
+          async: false,
+          data: {
+              cmd: '7',
+              Art: name,
+              Groesse: size,
+              Preis: price,
+          },
+          success: function(response){ 
+            productID = JSON.parse(response);
+            console.log("produkteID: " + productID);
+            console.log("menge: " + quantity);
+          },
+          error: function (xhr, ajaxOptions, thrownError) {
+            alert("error");
+            alert("Insert DB xhr.status" + xhr.status);
+            alert("Insert DB thrownError" + thrownError);
+          }
+        });
+
+        $.ajax({
+          url: "../BarTool/Controller.php",
+          type: 'POST',
+          async: false,
+          data: {
+              cmd: '8',
+              BestellungsID: BestellungsID,
+              ProdukteID: productID,
+              Menge: quantity,
+          },
+          success: function(response){ 
+          },
+          error: function (xhr, ajaxOptions, thrownError) {
+            alert("error");
+            alert("Insert DB xhr.status" + xhr.status);
+            alert("Insert DB thrownError" + thrownError);
+          }
+        });
+
+      }
+      
+      $('.btnCard').remove();
+      document.getElementById("shoppingContainer").style.display = "none";
+      off();
+      
+    }
   }
-}
 
 /**
  * um manchen Datentransfer abwarten zu können wennn benötigt

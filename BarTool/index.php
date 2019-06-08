@@ -77,26 +77,10 @@
         </div>
         <!-- Container for Shopping Cart Items -->
         <div style="display: none" id="shoppingContainer" class="shopppingCart">
-            <button id="order" class="btn btn-success" style="text-align:center; width:100%; margin-left: 0; margin-bottom: 1em;" onclick="placeOrder()">Bestellen</button>
-            <h3 class="h3" style="text-align: center;">Produkt | Menge | Größe</h3>
+            <button id="order" class="btn btn-success" style="text-align:center; width:100%; margin-left: 0; margin-bottom: 1em;" onclick="placeOrder()">zur Kasse</button>
+            <h3 class="h3" id="info" style="text-align: center;">Produkt | Menge | Größe</h3>
         </div>
     
-        <!-- Product Collection Overlay -->
-        <div id="productCollectionOverlay" class="overlay">
-            <!-- Button to close the overlay navigation -->
-            <a href="javascript:void(0)" class="closebtn" onclick="off()">&times;</a>
-            <!-- Overlay content -->
-            <div class="overlay-content">      
-                <div style="font-size: 2em; margin-top: 1em;" class="form-group">
-                    <input type="text">
-                    <input type="number" step="0.01">
-                    <input type="number" step="0.01">
-                    <input type="submit">
-                    <button style="width: 70%; font-size: 2em;" id="add" type="submit" class="btn btn-secondary btn" onclick="InsertProductIntoDB()">hinzufügen</button>
-                </div>
-            </div>
-        </div>
-        
          <!-- Order Overlay -->
          <div id="orderOverlay" class="overlay">
             <!-- Button to close the overlay navigation -->
@@ -107,7 +91,7 @@
                 <div style="font-size: 2em; margin-top: 1em;">
                    
                     <div style="text-align: center;">
-                         <input style="margin-top: 1em; text-align: center;" type=number step=0.01 id="voucher" placeholder="Gutscheinbetrag" onkeyup="calculateChange()">
+                         <input style="margin-top: 1em; text-align: center;" type="number" step="0.01" min="0" oninput="validity.valid||(value='');" id="voucher" placeholder="Gutscheinbetrag" onkeyup="calculateChange()">
                     </div>
 
                     <div style="text-align: center; font-size: 1.2em; color: white; top: 8em; left: 0.5em;">
@@ -126,15 +110,27 @@
                     </div>
 
                     <div style="text-align: right;">
-                        <input style="height: 1.3em; width: 6em; text-align: center;" type=number step=0.01 id="drinkMoney" placeholder="Trinkgeld" onkeyup="calculateChange()">
+                        <input style="height: 1.3em; width: 6em; text-align: center;" type="number" step="0.01" min="0" oninput="validity.valid||(value='');"; id="drinkMoney" placeholder="Trinkgeld" onkeyup="calculateChange()">
                     </div> 
 
                     <div style="text-align: center;">
-                        <input style="margin-top: 1em; text-align: center;" type=number step=0.01 id="moneyReceived" placeholder="Eingabe Geld erhalten" onkeyup="calculateChange()">
+                        <input style="margin-top: 1em; text-align: center;" type="number" step="0.01" min="0" oninput="validity.valid||(value='');" id="moneyReceived" placeholder="Eingabe Geld erhalten" onkeyup="calculateChange()">
                     </div>
-                    <button style="width: 100%; margin-left: 0; font-size: 2em; margin-top:1em;" id="edit" type="submit" class="btn btn-secondary btn" onclick="finishOrder()">Bestellung abschließen</button>
+                    <button style="width: 100%; margin-left: 0; font-size: 2em; margin-top:1em;" id="edit" type="submit" class="btn btn-success" onclick="finishOrder()">Bestellung abschließen</button>
                 </div>
             </div>
         </div>
+
+        <!-- Login Overlay -->
+        <div id="loginOverlay" class="overlay">
+            <!-- Overlay content -->
+            <div class="overlay-content">      
+                <div style="font-size: 2em; margin-top: 3em;" class="form-group">
+                    <input required class="form-control form-control-lg" type="text" id="loginName" placeholder="Name">
+                    <button style="width: 100%; font-size: 2em;" id="loginButton" type="submit" class="btn btn-secondary btn">Login</button>
+                </div>
+            </div>
+        </div>
+
     </body>
 </html>

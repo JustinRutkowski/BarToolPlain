@@ -10,7 +10,7 @@ switch ($cmd){
             die("Verbindung fehlgeschlagen: " . $mysqli->connect_error);
         }
         
-        $sql = "SELECT * FROM getraenke";
+        $sql = "SELECT * FROM produkte";
         $statement = $mysqli->prepare($sql);
         $statement->execute();
         $result = $statement->get_result();
@@ -33,7 +33,7 @@ switch ($cmd){
             die("Verbindung fehlgeschlagen: " . $mysqli->connect_error);
         }
         
-        $sql = "INSERT INTO getraenke (Art, Groesse, Preis) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO produkte (Art, Groesse, Preis) VALUES (?, ?, ?)";
         $statement = $mysqli->prepare($sql);
         $statement->bind_param("sdd", $Art, $Groesse, $Preis);
         $statement->execute();
@@ -50,7 +50,7 @@ switch ($cmd){
             die("Verbindung fehlgeschlagen: " . $mysqli->connect_error);
         }
         
-        $sql = "DELETE FROM getraenke WHERE Art = ?";
+        $sql = "DELETE FROM produkte WHERE Art = ?";
         $statement = $mysqli->prepare($sql);
         $statement->bind_param("s", $Art);
         $statement->execute();
@@ -66,7 +66,7 @@ switch ($cmd){
             die("Verbindung fehlgeschlagen: " . $mysqli->connect_error);
         }
         
-        $sql = "SELECT Groesse FROM getraenke WHERE Art = ?";
+        $sql = "SELECT Groesse FROM produkte WHERE Art = ?";
         $statement = $mysqli->prepare($sql);
         $statement->bind_param("s", $Art);
         $statement->execute();
@@ -89,7 +89,7 @@ switch ($cmd){
             die("Verbindung fehlgeschlagen: " . $mysqli->connect_error);
         }
         
-        $sql = "SELECT Preis FROM getraenke WHERE Art = ? AND Groesse = ?";
+        $sql = "SELECT Preis FROM produkte WHERE Art = ? AND Groesse = ?";
         $statement = $mysqli->prepare($sql);
         $statement->bind_param("sd", $Art, $Groesse);
         $statement->execute();
@@ -115,14 +115,81 @@ switch ($cmd){
             die("Verbindung fehlgeschlagen: " . $mysqli->connect_error);
         }
         
-        //$sql = "SELECT Preis FROM getraenke WHERE Art = ? AND Groesse = ?";
+        $sql = "INSERT INTO bestellungen (Bestellungspreis, GutscheinWert, GeldErhalten, TrinkGeld, RueckGeld, Nutzer) VALUES (?, ?, ?, ?, ?, ?)";
         $statement = $mysqli->prepare($sql);
-        $statement->bind_param("sd", $Art, $Groesse);
+        $statement->bind_param("ddddds", $Bestellungspreis, $GutscheinWert, $GeldErhalten, $TrinkGeld, $RueckGeld, $Nutzer);
         $statement->execute();
         $result = $statement->get_result();
 
-        echo json_encode($result);
+
+
+        $sql2 = "SELECT MAX(BestellungsID) FROM bestellungen";
+        $statement = $mysqli->prepare($sql2);
+        $statement->execute();
+        $result = $statement->get_result();
+
+       
+        echo json_encode($result->fetch_assoc());
+        
     break;
+    
+
+    case 7:
+        $productIDs = array();
+
+        $Art = $_POST['Art'];
+        $Groesse = $_POST['Groesse'];
+        $Preis = $_POST['Preis'][0];
+       
+
+        $mysqli = new mysqli("localhost", "root", "root", "kabaret");
+        if ($mysqli->connect_errno) {
+            die("Verbindung fehlgeschlagen: " . $mysqli->connect_error);
+        }
+        $sql = "SELECT produkteID FROM produkte WHERE Art = ? AND Groesse = ? AND Preis = ?";
+        $statement = $mysqli->prepare($sql);
+        $statement->bind_param("sdd", $Art, $Groesse, $Preis);
+        $statement->execute();
+        $result = $statement->get_result();
+
+        while($row = $result->fetch_assoc()) {
+            array_push($productIDs, $row['produkteID']);
+        }
+
+        echo json_encode($productIDs);
+
+    break;
+
+    case 8:
+    $productIDs = array();
+
+    $BestellungsID = $_POST['BestellungsID'];
+    $ProdukteID = $_POST['ProdukteID'][0];
+    $Menge = $_POST['Menge'];
+   
+    print_r($BestellungsID);
+    print_r($ProdukteID);
+    print_r($Menge);
+
+    $mysqli = new mysqli("localhost", "root", "root", "kabaret");
+    if ($mysqli->connect_errno) {
+        die("Verbindung fehlgeschlagen: " . $mysqli->connect_error);
+    }
+    $sql = "INSERT INTO produktebestellung (BestellungsID, ProdukteID, Menge) VALUES (?, ?, ?)";
+    $statement = $mysqli->prepare($sql);
+    $statement->bind_param("iii", $BestellungsID, $ProdukteID, $Menge);
+    $statement->execute();
+    $result = $statement->get_result();
+
+    while($row = $result->fetch_assoc()) {
+        array_push($productIDs, $row);
+    }
+
+    echo json_encode($productIDs);
+
+    
+
+break;
 }
 
 function array_push_assoc(&$array, $key, $value){
