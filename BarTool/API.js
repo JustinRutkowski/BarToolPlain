@@ -99,7 +99,8 @@ function addToShoppingCart(Size){
 
   shopppingCartItem.onclick = shoppingCartOverlay;
 
-
+  shopppingCartItem.style.fontSize = "30px";
+  shopppingCartItem.style.fontSize = adjustFontSize(shopppingCartItem);
 
   // Overlay bei anklicken der einzelnen Produkte
   function shoppingCartOverlay(){
@@ -363,6 +364,7 @@ function placeOrder(){
     var name = buttonText.split("|", 3)[0];
     quantity.push(buttonText.split("|", 3)[1]);
     var size = buttonText.split("|", 3)[2];
+    adjustFontSize(shoppingContainer.children.item(i));
     $.ajax({
       url: "../BarTool/controller.php",
       type: 'POST',
@@ -392,7 +394,7 @@ function placeOrder(){
   document.getElementById("orderOverlay").style.display = "block";
   document.getElementById("price").innerHTML = priceSum.toFixed(2) + " €";
   $('#moneyReceived').focus();
-
+  
 }
 
 function finishOrder(){

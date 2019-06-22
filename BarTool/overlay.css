@@ -85,7 +85,8 @@ select#fixed {
 .btnCard{
     border-radius: 25px;
     width: 100%;
-    font-size: 2em;
+    height: 55px;
+    font-size: 30px;
     background-color: #0069d9;
     color: white;
 }
