@@ -1,45 +1,50 @@
 <!doctype html>
 <html>
     <head>
-        <h1 style="border-bottom-style: solid; text-align: left; font-size: 4em;">Produkte</h1>
         
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <script src="API.js"></script>
-
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="APIProdukte.js"></script>
+        <link rel="stylesheet" href="./Bootstrap/css/bootstrap.min.css">
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="./Bootstrap/js/bootstrap.min.js"></script>
         <link rel="stylesheet" type="text/css" href="overlay.css">
-
-        <!-- load available products
-        <script type="text/javascript">
-            jQuery(function($){
-                $('#available').load('http://localhost/Bartool #products');
-            });
-        </script>
-        -->
+        
     <head>
 
-    <body>
-
-    <form action="../Bartool/index.php">
-            <button style="position: absolute; top: 0; right: 0; width: 30%; font-size: 1.8em;" class="btn btn-primary">Zurück</button>
-        </form>
-       
-        
+    <body onload="LoadProducts();">
+        <div class="navbar">
+            <h1 style="text-align: left; margin-right: 2em; font-size: 4em;">Produkte</h1>
+            <form action="../Bartool/index.php">
+                <button style="width: 7em;" class="btn btn-primary">Zurück</button>
+            </form>
+        </div>
+        <hr>
         <form action="http://localhost/Bartool/Produkte.php" method="GET">
-            <div style=>
-                <input class="form-control form-control-lg" type="text" placeholder="Produktname" name="Art" id="a" class="wantclick">
-                <input class="form-control form-control-lg" type="number" placeholder="Größe in Liter" step="0.01" name="Groesse" id="g">
-                <input class="form-control form-control-lg" type="number" placeholder="Preis in Euro" step="0.01"name="Preis" id="p">
-                <button style="width: 100%" class="btn btn-secondary btn" type="submit" onclick="InsertProductIntoDB(a.value, g.value ,p.value)">Produkt Hinzufügen</button>
+            <div class="navbar">
+                <input style="border-radius: 25px;" class="form-control form-control-lg" type="text" placeholder="Produktname" name="Art" id="a">
+                <input style="border-radius: 25px;" class="form-control form-control-lg" type="number" placeholder="Größe in Liter" step="0.01" name="Groesse" id="g">
+                <input style="border-radius: 25px;" class="form-control form-control-lg" type="number" placeholder="Preis in Euro" step="0.01"name="Preis" id="p">
+                <button style="width: 100%; font-size: 2em;" class="btn btn-secondary btn" type="submit" onclick="InsertProductIntoDB(a.value, g.value ,p.value)">Produkt Hinzufügen</button>
             </div>
         </form> 
         
-        <div id="available">
+        <h1 class="CustomH2">Produkte entfernen</h1>
+        <div class="navbar" id="products">
+        </div>  
+
+        <!-- Product Overlay -->
+        <div id="overlay" class="overlay">
+            <!-- Button to close the overlay navigation -->
+            <a href="javascript:void(0)" class="closebtn" onclick="offProduct()">&times;</a>
+            <!-- Overlay content -->
+            <div class="overlay-content" id="overlayContent">      
+                <div class="navbar" id="productSizes">
+                </div>
+            </div>
         </div>
     </body>
 </html>

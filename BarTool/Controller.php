@@ -1,15 +1,13 @@
 <?php
+require_once('connect.php');
 $cmd = $_POST['cmd'] * 1; 
+
 
 switch ($cmd){
     // GetDataBaseData
     case 1: 
         $products = array();
-        $mysqli = new mysqli("localhost", "root", "root", "kabaret");
-        if ($mysqli->connect_errno) {
-            die("Verbindung fehlgeschlagen: " . $mysqli->connect_error);
-        }
-        
+
         $sql = "SELECT * FROM produkte";
         $statement = $mysqli->prepare($sql);
         $statement->execute();
@@ -28,11 +26,6 @@ switch ($cmd){
         $Groesse = $_POST['Groesse'];
         $Preis = $_POST['Preis'];
         
-        $mysqli = new mysqli("localhost", "root", "root", "kabaret");
-        if ($mysqli->connect_errno) {
-            die("Verbindung fehlgeschlagen: " . $mysqli->connect_error);
-        }
-        
         $sql = "INSERT INTO produkte (Art, Groesse, Preis) VALUES (?, ?, ?)";
         $statement = $mysqli->prepare($sql);
         $statement->bind_param("sdd", $Art, $Groesse, $Preis);
@@ -44,15 +37,12 @@ switch ($cmd){
     // remove all occurences from one product from DB
     case 3: 
         $Art = $_POST['Art'];
+        $Groesse = $_POST['Groesse'];
 
-        $mysqli = new mysqli("localhost", "root", "root", "kabaret");
-        if ($mysqli->connect_errno) {
-            die("Verbindung fehlgeschlagen: " . $mysqli->connect_error);
-        }
+        $sql = "DELETE FROM produkte WHERE Art = ? && Groesse = ?";
         
-        $sql = "DELETE FROM produkte WHERE Art = ?";
         $statement = $mysqli->prepare($sql);
-        $statement->bind_param("s", $Art);
+        $statement->bind_param("sd", $Art, $Groesse);
         $statement->execute();
         $result = $statement->get_result();
     break;
@@ -61,10 +51,6 @@ switch ($cmd){
     case 4:
         $Art = $_POST['Art'];
         $sizes = array();
-        $mysqli = new mysqli("localhost", "root", "root", "kabaret");
-        if ($mysqli->connect_errno) {
-            die("Verbindung fehlgeschlagen: " . $mysqli->connect_error);
-        }
         
         $sql = "SELECT Groesse FROM produkte WHERE Art = ?";
         $statement = $mysqli->prepare($sql);
@@ -84,10 +70,6 @@ switch ($cmd){
         $Art = $_POST['Art'];
         $Groesse = $_POST['Groesse'];
         $prices = array();
-        $mysqli = new mysqli("localhost", "root", "root", "kabaret");
-        if ($mysqli->connect_errno) {
-            die("Verbindung fehlgeschlagen: " . $mysqli->connect_error);
-        }
         
         $sql = "SELECT Preis FROM produkte WHERE Art = ? AND Groesse = ?";
         $statement = $mysqli->prepare($sql);
@@ -110,11 +92,6 @@ switch ($cmd){
         $RueckGeld = $_POST['RueckGeld'];
         $Nutzer = $_POST['Nutzer'];
 
-        $mysqli = new mysqli("localhost", "root", "root", "kabaret");
-        if ($mysqli->connect_errno) {
-            die("Verbindung fehlgeschlagen: " . $mysqli->connect_error);
-        }
-        
         $sql = "INSERT INTO bestellungen (Bestellungspreis, GutscheinWert, GeldErhalten, TrinkGeld, RueckGeld, Nutzer) VALUES (?, ?, ?, ?, ?, ?)";
         $statement = $mysqli->prepare($sql);
         $statement->bind_param("ddddds", $Bestellungspreis, $GutscheinWert, $GeldErhalten, $TrinkGeld, $RueckGeld, $Nutzer);
@@ -141,11 +118,6 @@ switch ($cmd){
         $Groesse = $_POST['Groesse'];
         $Preis = $_POST['Preis'][0];
        
-
-        $mysqli = new mysqli("localhost", "root", "root", "kabaret");
-        if ($mysqli->connect_errno) {
-            die("Verbindung fehlgeschlagen: " . $mysqli->connect_error);
-        }
         $sql = "SELECT produkteID FROM produkte WHERE Art = ? AND Groesse = ? AND Preis = ?";
         $statement = $mysqli->prepare($sql);
         $statement->bind_param("sdd", $Art, $Groesse, $Preis);
@@ -171,10 +143,6 @@ switch ($cmd){
     print_r($ProdukteID);
     print_r($Menge);
 
-    $mysqli = new mysqli("localhost", "root", "root", "kabaret");
-    if ($mysqli->connect_errno) {
-        die("Verbindung fehlgeschlagen: " . $mysqli->connect_error);
-    }
     $sql = "INSERT INTO produktebestellung (BestellungsID, ProdukteID, Menge) VALUES (?, ?, ?)";
     $statement = $mysqli->prepare($sql);
     $statement->bind_param("iii", $BestellungsID, $ProdukteID, $Menge);

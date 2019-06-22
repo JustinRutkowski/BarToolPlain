@@ -1,39 +1,30 @@
 <!doctype html>
 <html>
     <head>
-        <h1 style="text-align: left; font-size: 4em;">Auswahl</h1>     
-        <form action="../Bartool/Produkte.php">
-            <button id="productCollection" style="position: absolute; float: right; top: 0; right: 0; width: 40%; font-size: 2em;" class="btn btn-primary">Produkte</button>
-        </form> 
+        
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <script src="API.js"></script>
-
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="APIProdukte.js"></script>
+        <link rel="stylesheet" href="./Bootstrap/css/bootstrap.min.css">
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="./Bootstrap/js/bootstrap.min.js"></script>
         <link rel="stylesheet" type="text/css" href="overlay.css">
     <head>   
     
     <body onload="LoadDBData(); setQuantity(1)">
-    <label id="heading" style="color: white; padding-bottom: 10px;" for="productButtons"><?php echo @$_GET['name'] ?></label>
-        <!-- Product Buttons -->
-        <div id="products">
+        <div class="navbar">
+            <h1 style="text-align: left; margin-right: 2em; font-size: 4em;">BarTool</h1>     
+                <form action="../Bartool/Produkte.php">
+                    <button id="productCollection" style="width: auto;" class="btn btn-primary">Produktverwaltung</button>
+                </form> 
+        </div>
+    <hr>
 
-        <!--
-            <button type="submit" class="btn btn-secondary btn-lg" value="Cola" name="name" id="Cola" onclick="on(id)"></button>
-            <button type="submit" class="btn btn-secondary btn-lg" value="Fanta" name="name" id="Fanta" onclick="on(id)"></button>
-            <button type="submit" class="btn btn-secondary btn-lg" value="Kaffee" name="name" id="Kaffee" onclick="on(id)"></button>
-            <button type="submit" class="btn btn-secondary btn-lg" value="Sekt" name="name" id="Sekt" onclick="on(id)"></button>
-            <button type="submit" class="btn btn-secondary btn-lg" value="Tee" name="name" id="Tee" onclick="on(id)"></button>
-            <button type="submit" class="btn btn-secondary btn-lg" value="Bier" name="name" id="Bier" onclick="on(id)"></button>
-            <button type="submit" class="btn btn-secondary btn-lg" value="Rotwein" name="name" id="Rotwein" onclick="on(id)"></button>
-            <button type="submit" class="btn btn-secondary btn-lg" value="Weißwein" name="name" id="Weißwein" onclick="on(id)"></button>
-            <button type="submit" class="btn btn-secondary btn-lg" value="Orangensaft" name="name" id="Orangensaft" onclick="on(id)"></button>
-            <button type="submit" class="btn btn-secondary btn-lg" value="Apfelsaft" name="name" id="Apfelsaft" onclick="on(id)"></button>
-        -->
+        <!-- Product Buttons -->
+        <div class="navbar" id="products">
         </div>  
           
         <!-- Product Overlay -->
@@ -41,10 +32,10 @@
             <!-- Button to close the overlay navigation -->
             <a href="javascript:void(0)" class="closebtn" onclick="off()">&times;</a>
             <!-- Overlay content -->
-            <div class="overlay-content">      
-                <div style="font-size: 3em; top: 0;" class="form-group">
+            <div style="margin-top:20%" class="overlay-content" id="ps">      
+                <div style="font-size: 2em; top: 0;" class="form-group">
                     <label style="color: white;" for="sellist">Menge</label>
-                    <select class="form-control" id="sellist" onclick="if (typeof(this.selectedIndex) != 'undefined') setQuantity(this.selectedIndex + 1)">        
+                    <select style="border-radius: 25px;" class="form-control navbar" id="sellist" onclick="if (typeof(this.selectedIndex) != 'undefined') setQuantity(this.selectedIndex + 1)">        
                         <option id="1" name="amount" value="1">1</option>
                         <option id="2" name="amount" value="2">2</option>
                         <option id="3" name="amount" value="3">3</option>
@@ -57,8 +48,7 @@
                         <option id="10" name="amount" value="10">10</option>
                     </select>
                 </div>
-                <div id="productSizes">
-                </div>
+                
             </div>
         </div>
 
@@ -68,17 +58,27 @@
             <!-- Button to close the overlay navigation -->
             <a href="javascript:void(0)" class="closebtn" onclick="off()">&times;</a>
             <!-- Overlay content -->
-            <div class="overlay-content">      
-                <div style="font-size: 2em; margin-top: 1em;" class="form-group">
-                    <button style="width: 70%; font-size: 2em;" id="delete" type="submit" class="btn btn-secondary btn">Entfernen</button>
-                    <button style="width: 70%; font-size: 2em;" id="edit" type="submit" class="btn btn-secondary btn">Bearbeiten</button>
+            <div class="overlay-content navbar">      
+                <div style="font-size: 2em; margin-top: 40%;" class="form-group">
+                    <button style="width: 100%; font-size: 2em; margin-bottom: 2em;" id="delete" type="submit" class="btn-secondary btn">Entfernen</button>
+                    <button style="width: 100%; font-size: 2em;" id="edit" type="submit" class="btn-secondary btn">Bearbeiten</button>
                 </div>
             </div>
         </div>
+
+        <hr>
+
         <!-- Container for Shopping Cart Items -->
-        <div style="display: none" id="shoppingContainer" class="shopppingCart">
-            <button id="order" class="btn btn-success" style="text-align:center; width:100%; margin-left: 0; margin-bottom: 1em;" onclick="placeOrder()">zur Kasse</button>
+        <div style="display: none" id="shoppingContainer" class="navbar shopppingCart">
+            <button id="order" class="btn-success" onclick="placeOrder()">zur Kasse</button>
             <h3 class="h3" id="info" style="text-align: center;">Produkt | Menge | Größe</h3>
+            <h3 class="h3" id="info" style="text-align: left;">letzte Bestellung</h3>
+            <h3 class="h3" id="info" style="position: absolute; right: 0; top: 200px;">aktuelle Bestellung</h3>
+
+            <div style="margin-left:0; margin-right:0; width:50%; position: absolute; right: 0;" id="containerNew" class="navbar"> 
+            </div>
+            <div style="margin-left:0; margin-right:0; width:54%" id="containerOld" class="navbar"> 
+            </div>
         </div>
     
          <!-- Order Overlay -->
@@ -91,7 +91,7 @@
                 <div style="font-size: 2em; margin-top: 1em;">
                    
                     <div style="text-align: center;">
-                         <input style="margin-top: 1em; text-align: center;" type="number" step="0.01" min="0" oninput="validity.valid||(value='');" id="voucher" placeholder="Gutscheinbetrag" onkeyup="calculateChange()">
+                         <input style="margin-top: 1em; text-align: center;" type="number" step="0.01" min="0" oninput="validity.valid||(value='');" id="voucher" placeholder="Gutscheinbetrag?" onkeyup="calculateChange()">
                     </div>
 
                     <div style="text-align: center; font-size: 1.2em; color: white; top: 8em; left: 0.5em;">
@@ -109,25 +109,33 @@
                         <label id="change">€</label>
                     </div>
 
-                    <div style="text-align: right;">
-                        <input style="height: 1.3em; width: 6em; text-align: center;" type="number" step="0.01" min="0" oninput="validity.valid||(value='');"; id="drinkMoney" placeholder="Trinkgeld" onkeyup="calculateChange()">
-                    </div> 
-
                     <div style="text-align: center;">
                         <input style="margin-top: 1em; text-align: center;" type="number" step="0.01" min="0" oninput="validity.valid||(value='');" id="moneyReceived" placeholder="Eingabe Geld erhalten" onkeyup="calculateChange()">
                     </div>
-                    <button style="width: 100%; margin-left: 0; font-size: 2em; margin-top:1em;" id="edit" type="submit" class="btn btn-success" onclick="finishOrder()">Bestellung abschließen</button>
+
+                    <div style="text-align: center;">
+                        <input style="margin-top: 1em; text-align: center;" type="number" step="0.01" min="0" oninput="validity.valid||(value='');"; id="drinkMoney" placeholder="Trinkgeld?" onkeyup="calculateChange()">
+                    </div> 
+
+                    <button style=" font-size: 1.5em; margin-top:1em;" id="edit" type="submit" class="btn-success navbar form-control" onclick="finishOrder()">Bestellung abschließen</button>
                 </div>
+
+                <h3 class="h3" id="info" style="color: white; text-align: center;">Übersicht</h3>
+                <div id="shoppingContainer2" class="navbar shopppingCart">
+
+                </div>
+     
             </div>
         </div>
 
         <!-- Login Overlay -->
         <div id="loginOverlay" class="overlay">
             <!-- Overlay content -->
-            <div class="overlay-content">      
-                <div style="font-size: 2em; margin-top: 3em;" class="form-group">
-                    <input required class="form-control form-control-lg" type="text" id="loginName" placeholder="Name">
-                    <button style="width: 100%; font-size: 2em;" id="loginButton" type="submit" class="btn btn-secondary btn">Login</button>
+            <div style="height: 80%" class="overlay-content navbar">      
+                <div style="font-size:2em;" class="form-group">
+                    <h3>Bitte gib deinen Namen ein!</h3>
+                    <input style="border-radius: 25px" required class="form-control form-control-lg" type="text" id="loginName" placeholder="Name">
+                    <button style="width: 100%; font-size:2em; margin-left:0; height: auto" id="loginButton" type="submit" class="btn-secondary btn">Login</button>
                 </div>
             </div>
         </div>
