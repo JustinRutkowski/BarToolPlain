@@ -14,6 +14,7 @@ function on(name) {
 
   document.getElementById('sellist').value = 1;
   appendSizesToProduct(name);
+  setQuantity(1);
 }
 
 /**
@@ -69,6 +70,9 @@ function cartItemOverlayOn(productName) {
 function addToShoppingCart(Size){
   document.getElementById("order").style.display = "block";
   document.getElementById("info").style.display = "block";
+  document.getElementById("order").style.visibility = "visible";
+  document.getElementById("info").style.visibility = "visible";
+
   var overviewContainer = document.getElementById("shoppingContainer2");
   overviewContainer.style.backgroundColor = "lightcyan";
 
@@ -533,7 +537,9 @@ function finishOrder(){
 
       $('#containerNew').empty();
       $('#shoppingContainer2').empty();
-      document.getElementById("shoppingContainer").style.display = "none";
+      document.getElementById("order").style.visibility = "hidden";
+      document.getElementById("info").style.visibility = "hidden";
+
       off();
       
     }
